@@ -1,0 +1,40 @@
+version: '3'
+services:
+  php:
+    build: 
+      context: .
+      target: php
+      args:
+        - APP_ENV=${APP_ENV}
+    environment:
+      - APP_ENV=${APP_ENV}
+      - DB_HOST=mysql
+      - DB_PORT=3306
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    ports:
+      - "9090:9090"
+    depends_on:
+      - mysql
+    networks:
+      - laravel-net
+
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - laravel-net
+
+networks:
+  laravel-net:
+    driver: bridge
+
+volumes:
+  db-data: ~
